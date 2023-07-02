@@ -1,5 +1,5 @@
 # Overview
-Bankist is a simulation application for a small bank, allowing users to manage their accounts, transfer money and request loans. It provides a user-friendly interface and features a range of functionalities to simulate real-world banking operations.
+Bankist App is a simulation for a small bank, allowing users to manage their accounts, transfer money and request loans. It provides a user-friendly interface and features a range of functionalities to simulate real-world banking operations.
 
 </br>
 
