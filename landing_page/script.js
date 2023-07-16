@@ -6,15 +6,13 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to')
 const section1 = document.querySelector('#section--1')
-const section2 = document.querySelector('#section--2')
-const section3 = document.querySelector('#section--3')
-const section4 = document.querySelector('#section--4')
 const tabs = document.querySelectorAll('.operations__tab')
 const tabsContainer = document.querySelector('.operations__tab-container')
 const tabsContent = document.querySelectorAll('.operations__content')
 const nav = document.querySelector('.nav')
 const header = document.querySelector('.header')
-
+const allSesions = document.querySelectorAll('.section')
+const imgsTarget = document.querySelectorAll('img[data-src]')
 ///////////////////////////////////////
 // Modal window
 
@@ -142,7 +140,6 @@ const headerObserver = new IntersectionObserver(stickNav, {
 headerObserver.observe(header)
 
 // Revel Sections
-const allSesions = document.querySelectorAll('.section')
 
 const revealSection = (entries, observer) => {
   const [entry] = entries
@@ -163,5 +160,25 @@ allSesions.forEach(section => {
 })
 
 
+// Lazy Loading
+const loadImg = (entries, observer) => {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+  entry.target.src = entry.target.dataset.src
+  entry.target.addEventListener('load', () => {
+    entry.target.classList.remove('lazy-img')
+  })
+  observer.unobserve(entry.target)
+}
+const imgObserver = new IntersectionObserver(
+  loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '-200px'
+})
+
+imgsTarget.forEach(img => {
+  imgObserver.observe(img)
+})
 // =======================
 
