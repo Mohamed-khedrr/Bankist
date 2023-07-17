@@ -1,5 +1,6 @@
 'use strict';
 
+// DOM
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
@@ -13,7 +14,19 @@ const nav = document.querySelector('.nav')
 const header = document.querySelector('.header')
 const allSesions = document.querySelectorAll('.section')
 const imgsTarget = document.querySelectorAll('img[data-src]')
+const slides = document.querySelectorAll('.slide')
+const sliderBtnLeft = document.querySelector('.slider__btn--left')
+const sliderBtnRight = document.querySelector('.slider__btn--right')
+const dotContainer = document.querySelector('.dots')
 ///////////////////////////////////////
+
+// Global Variables
+let currentSlide = 0;
+const maxSlides = slides.length
+let navHeight = nav.getBoundingClientRect().height;
+
+
+
 // Modal window
 
 const openModal = function (e) {
@@ -110,19 +123,7 @@ nav.addEventListener('mouseover', handleHover.bind(0.7))
 nav.addEventListener('mouseout', handleHover.bind(1))
 
 
-// Sticky Navigation
-// const initialCoords = section1.getBoundingClientRect()
-// window.addEventListener('scroll', () => {
-//   if (window.scrollY > initialCoords.top) {
-//     nav.classList.add('sticky')
-//   } else {
-//     nav.classList.remove('sticky')
-//   }
-// })
-
-
 // Sticky Navigation using Intersection Observer API
-let navHeight = nav.getBoundingClientRect().height;
 
 const stickNav = (entries) => {
   const [entry] = entries
@@ -180,5 +181,73 @@ const imgObserver = new IntersectionObserver(
 imgsTarget.forEach(img => {
   imgObserver.observe(img)
 })
-// =======================
+
+
+// Create Slider Dots
+const createDots = () => {
+  slides.forEach((_, i) => {
+    dotContainer.insertAdjacentHTML('beforeend',
+      `<button class="dots__dot" data-slide="${i}"></button>`)
+  })
+}
+
+
+// Active slider dots
+const activateDot = (slide) => {
+  const activeClass = 'dots__dot--active';
+  document.querySelectorAll('.dots__dot')
+    .forEach(dot => {
+      dot.classList.remove(activeClass)
+      if (dot.dataset.slide == slide) dot.classList.add(activeClass)
+    })
+}
+
+
+
+const goToSlide = (slide) => {
+  slides.forEach((s, i) => {
+    s.style.transform = `translateX(${100 * (i - slide)}%)`
+  })
+  activateDot(slide)
+}
+
+const nextSlide = () => {
+  if (currentSlide === maxSlides - 1) currentSlide = 0;
+  else currentSlide++;
+
+  goToSlide(currentSlide);
+}
+
+const prevSlide = () => {
+  if (currentSlide === 0) currentSlide = maxSlides - 1;
+  else currentSlide--;
+  goToSlide(currentSlide)
+}
+
+
+
+sliderBtnRight.addEventListener('click', nextSlide)
+sliderBtnLeft.addEventListener('click', prevSlide)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft' && prevSlide());
+  if (e.key === 'ArrowRight' && nextSlide());
+})
+
+dotContainer.addEventListener('click', (e) => {
+  const dot = e.target
+  if (dot.classList.contains('dots__dot')) {
+    const slide = dot.dataset.slide;
+    goToSlide(slide)
+  }
+})
+
+
+// Init Slider 
+const initSlider = () => {
+  createDots()
+  goToSlide(0);
+}
+
+initSlider()
+
 
